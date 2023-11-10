@@ -3,7 +3,7 @@ OBJ = ./obj
 SRC = ./src
 
 all:
-	gcc $(SRC)/main.c -o $(BIN)/bus-ride
+	gcc $(SRC)/main.c -o $(BIN)/bus-ride -pthread
 
 run:
 	$(BIN)/bus-ride
