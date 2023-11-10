@@ -54,6 +54,3 @@ dkms.conf
 # Cache folders
 .cache/
 compile_commands.json
-
-# Compilation Result
-bin/**
