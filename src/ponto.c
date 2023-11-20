@@ -56,6 +56,14 @@ void* ponto(void *p_arg){
     printf("Ponto %d esperando onibus chegar\n", index);
     fflush(0);
     #endif
+    //TODO se o ponto entra aqui, ele nao tem como saber que a simulacao acabou, dando deadlock
+    //Temos algumas opcoes:
+    //  1 - Ignorar, pois eh a thread the ponto, e ela sera jogada fora quando a main terminar
+    //  2 - Fazer com que a main faca uma passagem por todos os pontos quando a simulacao acabar, matando essas threads, 
+    //  ou chamando cond_onibus_chegou_no_ponto para elas acordarem e terminarem sozinhas
+    //  3 - Fazer com que os onibus passem pelos pontos, ate todas terminarem, mas ai eles teriam que esperar todos os passageiros
+    //  terminarem E todos os pontos terminarem
+    //Sou mais fa da 2, mas a 3 me parece mais "limpa"
     while(pontos_dados[index].onibus_no_ponto == -1) pthread_cond_wait(&pontos_dados[index].cond_onibus_chegou_no_ponto, &dados_lock);
     ponto_enche_onibus(index, pontos_dados[index].onibus_no_ponto);
     //libera_onibus()
