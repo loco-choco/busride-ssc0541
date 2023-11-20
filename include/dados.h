@@ -6,7 +6,7 @@
 #define DADOS_H
 
 typedef struct ponto_dado{
-  int* passageiros_na_fila;
+  int* passageiros_na_fila; //TODO Trocar por Lista FIFO
   int onibus_no_ponto;
   pthread_mutex_t onibus_no_ponto_lock;
   pthread_cond_t cond_onibus_pronto;
