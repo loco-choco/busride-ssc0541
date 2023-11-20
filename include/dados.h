@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "queue.h"
 
 #ifndef DADOS_H
 #define DADOS_H
@@ -12,7 +13,7 @@ typedef struct passageiro_args{
 } passageiro_args;
 
 typedef struct ponto_dado{
-  int* passageiros_na_fila; //TODO Trocar por Lista FIFO
+  queue_root* passageiros_na_fila;
   int onibus_no_ponto;
   pthread_mutex_t onibus_no_ponto_lock;
   pthread_cond_t cond_onibus_pronto;
