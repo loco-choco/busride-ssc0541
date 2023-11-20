@@ -1,17 +1,33 @@
-BIN = ./bin
-OBJ = ./obj
-INCLUDE = ./include
-SRC = ./src
+UTIL = ./src/util.c ./src/bus.c ./src/passenger.c ./src/passengersList.c ./src/point.c
+MAIN = ./app/main.c
+BINARY = ./bin/executavel
 
 all:
-	gcc -c $(SRC)/onibus.c -I $(INCLUDE)/ -o $(OBJ)/onibus.o -pthread
-	gcc -c $(SRC)/ponto.c -I $(INCLUDE)/ -o $(OBJ)/ponto.o -pthread
-	gcc -c $(SRC)/passageiro.c -I $(INCLUDE)/ -o $(OBJ)/passageiro.o -pthread
-	gcc $(SRC)/main.c $(OBJ)/onibus.o $(OBJ)/ponto.o $(OBJ)/passageiro.o -I $(INCLUDE)/ -o $(BIN)/bus-ride -pthread
+	@gcc -Wall -Wno-unused-result -Werror -g $(UTIL) $(MAIN) -o $(BINARY) -lm -lpthread
 
 run:
-	$(BIN)/bus-ride
+	@$(BINARY)
+
+ex:
+	@./$(BINARY) < in/2.in
+
+debug:
+	@gcc -DDEBUG -Wall $(MAIN) $(UTIL) -o $(BINARY) -lm
+
+valgrind:
+	@valgrind -s --tool=memcheck --leak-check=full  --track-origins=yes --show-leak-kinds=all --show-reachable=yes $(BINARY)
 
 clean:
-	rm $(OBJ)/*.o
-	rm $(BIN)/*
+	@rm *.o
+
+r:
+	@clear all run
+
+zip:
+	@zip -r bonus.zip *
+
+deleteZip:
+	@rm bonus.zip
+
+refreshZip:
+	@deleteZip zip
