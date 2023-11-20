@@ -5,8 +5,8 @@
 #include "dados.h"
 
 void onibus_inicio(){}
-void onibus(){
-  int index;
+void *onibus(void *p_arg){
+  int index = (int) *((int *)p_arg);
   //inicio()
   //while continuar:
   //  if tenta_ponto():

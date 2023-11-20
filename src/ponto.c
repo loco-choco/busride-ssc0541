@@ -14,8 +14,8 @@ void ponto_enche_onibus(int index, int onibus_index){
   //}
 }
 //void ponto_libera_onibus();
-void ponto(){
-  int index;
+void* ponto(void *p_arg){
+  int index = (int) *((int *)p_arg);
   //inicio()
   //while continuar:
   //  espera_onibus()

@@ -11,10 +11,11 @@ void passageiro_entra_no_ponto(int index, int ponto_index){
 void passageiro_escrever_trace(int index){
   //TODO Escrever no arquivo trace
 }
-void passageiro(){
-  int index;
-  int ponto_inicial;
-  int ponto_final;
+void *passageiro(void *p_arg){
+  passageiro_args args = (passageiro_args) *((passageiro_args *)p_arg);
+  int index = args.index;
+  int ponto_inicial = args.ponto_inicial;
+  int ponto_final = args.ponto_final;
   //inicio()
   //entra_ponto()
   //espera_onibus()

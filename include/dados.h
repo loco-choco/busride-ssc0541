@@ -5,6 +5,12 @@
 #ifndef DADOS_H
 #define DADOS_H
 
+typedef struct passageiro_args{
+  int index;
+  int ponto_inicial;
+  int ponto_final;
+} passageiro_args;
+
 typedef struct ponto_dado{
   int* passageiros_na_fila; //TODO Trocar por Lista FIFO
   int onibus_no_ponto;
@@ -32,7 +38,7 @@ extern int num_passageiros_restantes;
 extern int num_pontos;
 extern pthread_mutex_t dados_lock;
 
-void onibus();
-void ponto();
-void passageiro();
+void *onibus(void *p_arg);
+void *ponto(void *p_arg);
+void *passageiro(void *p_arg);
 #endif
