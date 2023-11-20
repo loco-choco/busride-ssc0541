@@ -5,6 +5,7 @@
 
 onibus_dado* onibus_dados;
 ponto_dado* pontos_dados;
+passageiro_dado* passageiros_dados;
 int num_passageiros_restantes;
 int num_pontos;
 pthread_mutex_t dados_lock;
