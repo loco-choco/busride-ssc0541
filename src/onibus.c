@@ -26,10 +26,11 @@ void onibus(){
       pthread_cond_wait(&pontos_dados[ponto_atual].cond_onibus_pronto, &dados_lock);
 
     }
+    //ir_prox_ponto
     onibus_dados[index].ponto_atual = (onibus_dados[index].ponto_atual + 1) % num_pontos;
     if(num_passageiros_restantes == 0) continuar = 0;
     pthread_mutex_unlock(&dados_lock);
-    //ir_prox_ponto
+    //espera da ida ao prox_ponto
     sleep(rand()% 5 + 1);
   }
 }
