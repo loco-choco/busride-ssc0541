@@ -13,8 +13,10 @@ int queue_queue(queue_root* queue, element_t* element){
   node->element = element;
   node->next_node = queue->last_node;
   node->prev_node = NULL;
+  queue->count++;
 
   if(queue->last_node != NULL) queue->last_node->prev_node = node;
+  queue->last_node = node;
 
   if(queue->first_node == NULL) queue->first_node = node;
 
@@ -31,6 +33,7 @@ int queue_deque(queue_root* queue, element_t** dequed_element){
   *dequed_element = node->element;
   
   queue->first_node = node->prev_node;
+  queue->count--;
   if(queue->first_node != NULL) queue->first_node->next_node = NULL;
   
   if(queue->last_node == node) queue->last_node = NULL;

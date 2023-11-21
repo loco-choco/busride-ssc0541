@@ -12,6 +12,7 @@ typedef struct queue_node{
 typedef struct queue_root{
   queue_node* first_node;
   queue_node* last_node;
+  int count;
 } queue_root;
 
 queue_root* queue_create();
