@@ -4,6 +4,11 @@
 #include <unistd.h>
 #include "dados.h"
 
+#define clear() printf("\033[H\033[J")
+#define enable_cursor() printf("\e[?25h")
+#define disable_cursor() printf("\e[?25l")
+#define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
+
 onibus_dado* onibus_dados;
 ponto_dado* pontos_dados;
 passageiro_dado* passageiros_dados;
@@ -18,10 +23,11 @@ void desenhar_simulacao_no_terminal(int quant_onibus, int quant_pontos, int quan
 
 int main(void) {
   printf("Bus Ride!\n");
-  int quant_onibus = 1; 
-  int quant_pontos = 3;
-  int quant_passageiros = 2;
-  int capacidade_onibus = 1;
+  srand(time(NULL)); //Seed aleatoria
+  int quant_onibus = 100; 
+  int quant_pontos = 10;
+  int quant_passageiros = 1;
+  int capacidade_onibus = 100;
 
   pthread_t* onibus_handle = calloc(quant_onibus, sizeof(pthread_t));
   pthread_t* pontos_handle = calloc(quant_pontos, sizeof(pthread_t));
@@ -56,8 +62,8 @@ int main(void) {
   passageiro_args* passageiros_args = malloc(quant_passageiros * sizeof(passageiro_args));
   for(i = 0; i < quant_passageiros; i++){
     passageiros_args[i].index = i;
-    passageiros_args[i].ponto_inicial = 1;
-    passageiros_args[i].ponto_final = 0;
+    passageiros_args[i].ponto_inicial = rand() % quant_pontos;
+    passageiros_args[i].ponto_final = rand() % quant_pontos;
     if(pthread_create(&passageiros_handle[i], 0, (void *) passageiro, (void *) &passageiros_args[i]) != 0){
       printf("Erro criando thread do passageiro %d! Saindo...\n", i);
       fflush(0);
@@ -66,6 +72,8 @@ int main(void) {
   }
 
   int continuar = 1;
+  disable_cursor(); //Esconde o cursor
+  fflush(0);
   while(continuar){
     pthread_mutex_lock(&dados_lock);
     #ifndef DEBUG
@@ -79,6 +87,8 @@ int main(void) {
     pthread_mutex_unlock(&dados_lock);
     usleep(500);
   };
+  enable_cursor();
+  fflush(0);
 
   liberar_variaveis_de_simulacao(quant_pontos);
   free(onibus_indexes);
@@ -107,6 +117,8 @@ void iniciar_variaveis_de_simulacao(int quant_onibus, int quant_pontos, int quan
   for(i = 0; i < quant_passageiros; i++){
     passageiros_dados[i].onibus_atual = -1;
     passageiros_dados[i].passageiro_finalizou = 0;
+    passageiros_dados[i].ponto_inicial = -1;
+    passageiros_dados[i].ponto_final = -1;
     pthread_cond_init(&passageiros_dados[i].cond_entrou_no_onibus, NULL);
   }
   //Inicia Dados Pontos
@@ -126,7 +138,6 @@ void liberar_variaveis_de_simulacao(int quant_pontos){
   #endif
   free(onibus_dados);
   free(passageiros_dados);
-  pontos_dados = malloc(quant_pontos * sizeof(ponto_dado));
   for(int i = 0; i < quant_pontos; i++)
     queue_free(pontos_dados[i].passageiros_na_fila);
   free(pontos_dados);
@@ -134,8 +145,7 @@ void liberar_variaveis_de_simulacao(int quant_pontos){
 
 void desenhar_status_no_terminal(int quant_onibus, int quant_pontos, int quant_passageiros){
   //Limpar o terminal
-  printf("\e[1;1H\e[2J");
-  fflush(0);
+  clear();
   int i;
   printf("Quantidade de passageiros restantes: %d\n", num_passageiros_restantes);
   printf("Onibus:\n");
@@ -148,16 +158,66 @@ void desenhar_status_no_terminal(int quant_onibus, int quant_pontos, int quant_p
   }
   printf("Passageiros:\n");
   for(i = 0; i < quant_passageiros; i++){
-    printf("\t[%d] - no onibus %d - acabou %d\n", i, passageiros_dados[i].onibus_atual, passageiros_dados[i].passageiro_finalizou);
+    printf("\t[%d] - (%d -> %d) - no onibus %d - acabou %d\n", i,
+		    passageiros_dados[i].ponto_inicial, passageiros_dados[i].ponto_final,
+		    passageiros_dados[i].onibus_atual,
+		    passageiros_dados[i].passageiro_finalizou);
   }
   fflush(0);
 }
 
 void desenhar_simulacao_no_terminal(int quant_onibus, int quant_pontos, int quant_passageiros){
   //Limpar o terminal
-  printf("\e[1;1H\e[2J");
-  fflush(0);
+  int quant_max_de_pontos_para_mostrar = 10;
+  int quant_de_indices_para_mostrar = 5;
+  clear();
   int i;
+  //Preparando o canvas da simulacao
+  for(i = 0; i < quant_de_indices_para_mostrar; i++) printf("\n");
+
+  printf("|");
+  for(i = 0; i < quant_max_de_pontos_para_mostrar && i < quant_pontos; i++){
+    printf("T==-==-==-==");
+  }
+  printf("|");
+  for(i = 0; i < quant_de_indices_para_mostrar; i++){
+    printf("\n|");
+    for(int j = 0; j < quant_max_de_pontos_para_mostrar && j < quant_pontos; j++){
+      printf("            ");
+    }
+    printf("|");
+  }
+  printf("\n|");
+  for(i = 0; i < quant_max_de_pontos_para_mostrar && i < quant_pontos; i++){
+    printf("-==-==-==-==");
+  }
+  printf("|");
+  //Desenhando passageiros em quais pontos
+  for(i = 0; i < quant_max_de_pontos_para_mostrar && i < quant_pontos; i++){
+    queue_node* passageiro_esperando = pontos_dados[i].passageiros_na_fila->first_node;
+    for(int j = 0; j < quant_de_indices_para_mostrar && j < pontos_dados[i].passageiros_na_fila->count; j++){
+      gotoxy(2 + i * 12, quant_de_indices_para_mostrar - j);
+      printf("%d", *passageiro_esperando->element);
+      passageiro_esperando = passageiro_esperando->prev_node;
+    }
+  }
+  //Desenhando onibus em quais pontos
+  int* quant_de_onibus_mostrados_no_ponto = calloc(quant_max_de_pontos_para_mostrar, sizeof(int));
+  for(int j = 0; j < quant_onibus; j++){
+    onibus_dado dado = onibus_dados[j];
+    if(dado.ponto_atual >= 0 && dado.ponto_atual < quant_max_de_pontos_para_mostrar 
+		    && quant_de_onibus_mostrados_no_ponto[dado.ponto_atual] < quant_de_indices_para_mostrar){
+      
+      gotoxy(2 + dado.ponto_atual * 12, quant_de_indices_para_mostrar + quant_de_onibus_mostrados_no_ponto[dado.ponto_atual] + 2);
+      printf("%d", j); //j eh o index do onibus
+
+      quant_de_onibus_mostrados_no_ponto[dado.ponto_atual]++;
+    }
+  }
+  free(quant_de_onibus_mostrados_no_ponto);
+  /*
+  gotoxy(1,quant_de_indices_para_mostrar * 2 + 3);
+  printf("---------- Status da Simulacao ----------\n");
   printf("Quantidade de passageiros restantes: %d\n", num_passageiros_restantes);
   printf("Onibus:\n");
   for(i = 0; i < quant_onibus; i++){
@@ -169,7 +229,10 @@ void desenhar_simulacao_no_terminal(int quant_onibus, int quant_pontos, int quan
   }
   printf("Passageiros:\n");
   for(i = 0; i < quant_passageiros; i++){
-    printf("\t[%d] - no onibus %d - acabou %d\n", i, passageiros_dados[i].onibus_atual, passageiros_dados[i].passageiro_finalizou);
-  }
+    printf("\t[%d] - (%d -> %d) - no onibus %d - acabou %d\n", i,
+		    passageiros_dados[i].ponto_inicial, passageiros_dados[i].ponto_final,
+		    passageiros_dados[i].onibus_atual,
+		    passageiros_dados[i].passageiro_finalizou);
+  }*/
   fflush(0);
 }

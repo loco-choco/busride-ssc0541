@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include "dados.h"
 
-void passageiro_inicio(){}
 void passageiro_entra_no_ponto(int index, int ponto_index){
   //Adicionar o passageiro a lista FIFO do ponto
   #ifdef DEBUG
@@ -34,8 +33,9 @@ void *passageiro(void *p_arg){
   //  espera_no_onibus()
   //fazer_atividade()
   //num_passageiros_restantes--
-  passageiro_inicio();
   pthread_mutex_lock(&dados_lock);
+  passageiros_dados[index].ponto_inicial = ponto_inicial;
+  passageiros_dados[index].ponto_final = ponto_final;
   passageiro_entra_no_ponto(index, ponto_inicial);
   //espera_onibus()
   pthread_cond_wait(&passageiros_dados[index].cond_entrou_no_onibus, &dados_lock);
@@ -57,7 +57,7 @@ void *passageiro(void *p_arg){
   passageiros_dados[index].passageiro_finalizou = 1;
   pthread_mutex_unlock(&dados_lock);
   //Tempo da atividade
-  sleep(rand() % 10 + 1);
+  usleep((rand() % 9 + 1)*100);
   #ifdef DEBUG
   printf("Passageiro %d terminando\n", index);
   fflush(0);

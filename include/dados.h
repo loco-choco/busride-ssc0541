@@ -29,6 +29,8 @@ typedef struct onibus_dado{
 
 typedef struct passageiro_dado{
   int onibus_atual;
+  int ponto_inicial;
+  int ponto_final;
   int passageiro_finalizou;
   pthread_cond_t cond_entrou_no_onibus;
 } passageiro_dado;

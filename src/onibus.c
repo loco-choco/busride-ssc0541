@@ -5,7 +5,7 @@
 #include "dados.h"
 
 void onibus_inicio(int index){
-  onibus_dados[index].ponto_atual = 0; //rand() % num_pontos;
+  onibus_dados[index].ponto_atual = rand() % num_pontos;
 }
 void *onibus(void *p_arg){
   int index = (int) *((int *)p_arg);
@@ -55,7 +55,7 @@ void *onibus(void *p_arg){
     pthread_mutex_unlock(&dados_lock);
     //espera da ida ao prox_ponto
       //esperar_passageiros()
-    sleep(rand()% 5 + 1);
+    usleep(((rand() % 5) / 2 + 1) * 500000);
   }
   #ifdef DEBUG
   printf("Onibus %d terminando\n", index);
