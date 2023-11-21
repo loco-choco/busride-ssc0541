@@ -13,7 +13,7 @@ void passageiro_entra_no_ponto(int index, int ponto_index){
   #endif
   int* index_para_queue = malloc(1 * sizeof(int));
   *index_para_queue = index;
-  queue_queue(pontos_dados[index].passageiros_na_fila, index_para_queue);
+  queue_queue(pontos_dados[ponto_index].passageiros_na_fila, index_para_queue);
 }
 void passageiro_escrever_trace(int index){
   //TODO Escrever no arquivo trace
@@ -54,6 +54,7 @@ void *passageiro(void *p_arg){
   //fazer_atividade()
   passageiro_escrever_trace(index);
   num_passageiros_restantes--;
+  passageiros_dados[index].passageiro_finalizou = 1;
   pthread_mutex_unlock(&dados_lock);
   //Tempo da atividade
   sleep(rand() % 10 + 1);
