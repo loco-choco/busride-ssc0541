@@ -11,7 +11,10 @@ int passenger_getID(PASSENGER *passenger);
 int passenger_getSourceID(PASSENGER *passenger);
 int passenger_getDestinationID(PASSENGER *passenger);
 
-void passenger_appendOnFile(PASSENGER *passenger, char *message);
+void passenger_setCurrentPointID(PASSENGER *passenger, int currentPointID);
+boolean passenger_isOnPoint(PASSENGER *passenger);
+
+void passenger_saveFile(PASSENGER *passenger);
 
 void passenger_delete(PASSENGER **passenger);
 

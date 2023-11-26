@@ -54,10 +54,6 @@ void point_removeFirstPassenger(POINT *point) {
     passengersList_remove(point->passengersList, passenger);
 }
 
-void point_wakeUpFirstPassenger(POINT *point) {
-    ///////////////////////// not implemented yet
-}
-
 void point_pushPassenger(POINT *point, PASSENGER *passenger) {
     passengersList_push(point->passengersList, passenger);
 }

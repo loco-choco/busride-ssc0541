@@ -1,0 +1,75 @@
+
+passageiro:
+    -ponto_inicial
+    -ponto_final
+    -bus *onibus
+
+    >> Vai pro ponto inicial
+    entra na fila do ponto;
+    salvar tempo de chegada;
+    espera pelo onibus (dorme);
+
+    >> Entra no onibus:
+    guardar onibus;
+    sair da fila do ponto;
+    sentar nos assentos do onibus;
+    salvar tempo de embarque;
+
+    >> Confere o ponto:
+    while(ponto->end_bus != ponto_final->end_bus->id) {
+        dorme;
+        bus->contador--;
+    }
+
+    >> Sai do onibus:
+    salvar tempo de desembarque
+
+    >> Grava o arquivo e encerra;
+
+
+onibus:
+    -id onibus;
+
+    -id ponto = NENHUM;
+    -id proximo_ponto = rand();
+    
+    -semafaro passageiros_th;
+    ********-semaforo onibus_th;
+
+    enquanto (executando):
+        >> ponto == NENHUM:
+            Simula viagem dormindo por um tempo aleatório
+            
+            tenta ancorar no proximo_ponto;
+            Se sim
+                ponto = proximo_ponto;
+            
+            proximo_ponto = proximo_ponto + 1 % numPontos;
+
+        >> ponto == ALGO:
+
+            //Esperar passageiros descerem:
+            onibus seta ponto atual nele;
+            contador = qtdPessoasNoOnibus;
+            while(contador > 0); 
+            **********LIXO: dorme, esperando o ultimo passageiro se decidir;
+
+            //Esperar passageiros entrarem:
+            while (tiver vaga && tiver passageiro no ponto) acorda primeiro da fila;
+
+            //Sai do ponto:
+            ponto = NENHUM;    
+
+
+main():
+    input >> S, C, P, A
+    inicializar vetores S, C, P;
+    inicializar threads C, P;
+
+    Esperar todos os Ps terminarem
+    executar = false;
+    Esperar todos os Cs terminarem;
+
+    desaloca tudo;
+    fim;
+

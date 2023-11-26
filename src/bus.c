@@ -19,11 +19,6 @@ BUS *bus_create(int id, int passengersMax) {
         
         bus->passengersMutex = calloc(1, sizeof(pthread_mutex_t));
         pthread_mutex_init(bus->passengersMutex, NULL);
-
-        bus->passengersList = passengersList_create();
-        if(bus->passengersList == NULL) {
-            bus_erase(&bus);
-        }
     }
     return bus;
 }

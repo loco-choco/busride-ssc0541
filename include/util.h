@@ -11,5 +11,6 @@ typedef int boolean;
 //Funcoes com string
 void string_delete(char **string);
 
+char *string_getCurrentTime();
 
 #endif
