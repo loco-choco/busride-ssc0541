@@ -1,5 +1,4 @@
  #include "../include/point.h"
-#include "../include/queue.h"
 #include <stdlib.h>
 
 
@@ -35,6 +34,10 @@ void point_queueUnlock(POINT *point) {
 
 void point_queue_cond_mutex(POINT *point, pthread_cond_t *cond) {
     pthread_cond_wait(cond, &(point->queueMutex));
+}
+
+int point_getNumPassengersInQueue(POINT *point) {
+    queue_size(point->queue);
 }
 
 //Bus Functions
@@ -82,8 +85,9 @@ boolean point_hasSpaceAvaliableInBus(POINT *point) {
     return (point->bus != NULL && point->bus->numPassengers < point->bus->maxPassengers);
 }
 
-
-
+QUEUE *point_getQueue(POINT *point) {
+    return point->queue;
+}
 
 void point_erase(POINT **point) {
     if(*point != NULL) {

@@ -3,7 +3,17 @@
 #include <stdlib.h>
 #include "passenger.h"
 
-typedef struct _root QUEUE;
+typedef struct _node {
+  PASSENGER* passenger;
+  struct _node* next_node;
+  struct _node* prev_node;
+} queue_node;
+
+typedef struct _root {
+  queue_node* first_node;
+  queue_node* last_node;
+  int count;
+} QUEUE;
 
 QUEUE* queue_create();
 int queue_size(QUEUE* queue);

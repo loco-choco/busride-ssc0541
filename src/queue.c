@@ -1,18 +1,5 @@
 #include "../include/queue.h"
 
-typedef struct _node queue_node;
-struct _node {
-  PASSENGER* passenger;
-  struct _node* next_node;
-  struct _node* prev_node;
-};
-
-struct _root {
-  queue_node* first_node;
-  queue_node* last_node;
-  int count;
-};
-
 QUEUE* queue_create(){
   QUEUE* queue = (QUEUE*) calloc(1, sizeof(QUEUE));
   return queue;

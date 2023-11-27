@@ -23,7 +23,6 @@ void *bus_program(ARGS *args) {
             POINT *destinationPoint = simulationData->points[bus->nextPointID];
             if(point_tryAttachBus(destinationPoint, bus)) {
                 bus->currentPointID = bus->nextPointID;
-                printf("ONIBUS %d CHEGOU EM %d!\n", myId, bus->currentPointID);
             }
 
             //ATRIBUINDO PRÓXIMO DESTINO
@@ -32,7 +31,6 @@ void *bus_program(ARGS *args) {
         
         if(bus->currentPointID != NONE) {
             //DESEMBARCANDO PESSOAS
-            printf("ONIBUS %d ESTÁ DESEMBARCANDO!\n", myId);
             bus->count = bus->numPassengers;
             pthread_cond_broadcast(&(bus->passengers_th));
             pthread_mutex_lock(&(bus->countMutex));
@@ -40,7 +38,6 @@ void *bus_program(ARGS *args) {
             pthread_mutex_unlock(&(bus->countMutex));
 
             //EMBARCANDO PESSOAS
-            printf("ONIBUS %d ESTÁ EMBARCANDO!\n", myId);
             POINT *currentPoint = simulationData->points[bus->currentPointID];
  
             point_queueLock(currentPoint);
@@ -59,7 +56,6 @@ void *bus_program(ARGS *args) {
             point_disattachBus(currentPoint);
         }
     }
-    printf("SAINDO...\n");
     args_erase(&args);
     pthread_exit(0);
 }

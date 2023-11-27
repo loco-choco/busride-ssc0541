@@ -9,6 +9,7 @@
 typedef struct _simulation {
     boolean running;
     int numPassengers;
+    int numPassengersRemaining;
     PASSENGER **passengers;
     int numPoints;
     POINT **points;

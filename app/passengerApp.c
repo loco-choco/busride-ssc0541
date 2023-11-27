@@ -15,22 +15,18 @@ void *passenger_program(ARGS *args) {
     
     POINT *sourcePoint = simulationData->points[passenger_getSourcePointID(passenger)];
     POINT *destinationPoint = simulationData->points[passenger_getDestinationPointID(passenger)];
-    printf("PASSAGEIRO %d vai do %d ate %d\n", myID, passenger_getSourcePointID(passenger), passenger_getDestinationPointID(passenger));
     
     //VAI PARA O PONTO INICIAL
-    printf("PASSAGEIRO %d ESTÁ NO PONTO %d!\n", myID, passenger_getSourcePointID(passenger));
     point_queueLock(sourcePoint);
     point_queue(sourcePoint, passenger);
     passenger_setTimeArrival(passenger, string_getCurrentTime());
 
     //Espera onibus
-    printf("PASSAGEIRO %d está esperando onibus!\n", myID);
     while(!point_hasBus(sourcePoint) || !point_hasSpaceAvaliableInBus(sourcePoint)) {
         point_waitForBus(sourcePoint, passenger);
     }
 
     //Sai do ponto e Entra no onibus
-    printf("PASSAGEIRO %d está entrando no onibus!\n", myID);
 
     BUS *bus = point_getBus(sourcePoint);
     passenger_setBus(passenger, bus);
@@ -46,7 +42,6 @@ void *passenger_program(ARGS *args) {
     pthread_cond_signal(&(bus->bus_th));
 
     //confere e dorme no onibus
-    printf("PASSAGEIRO %d está esperando para descer!\n", myID);
     pthread_mutex_lock(&(bus->countMutex));
     while(point_getBus(destinationPoint) != bus) {
         pthread_cond_wait(&(bus->passengers_th), &(bus->countMutex));
@@ -55,7 +50,6 @@ void *passenger_program(ARGS *args) {
     }
     
     //sai do onibus;
-    printf("PASSAGEIRO %d está descendo!\n", myID);
     pthread_mutex_lock(&(bus->passengersMutex));
     bus->numPassengers -= 1;
     passenger_setTimeDisembarkation(passenger, string_getCurrentTime());
@@ -66,5 +60,6 @@ void *passenger_program(ARGS *args) {
     passenger_saveFile(passenger);
 
     args_erase(&args);
+    simulationData->numPassengersRemaining -= 1; 
     pthread_exit(0);
 }

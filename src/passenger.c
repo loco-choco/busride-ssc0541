@@ -23,6 +23,8 @@ PASSENGER *passenger_create(int id) {
         passenger->id = id;
 
         passenger->bus = NULL;
+        passenger->sourcePointID = -1;
+        passenger->destinationPointID = -1;
 
         passenger->timeArrival = NULL;
         passenger->timeBoarding = NULL;

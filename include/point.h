@@ -4,6 +4,7 @@
 #include "bus.h"
 #include "passenger.h"
 #include "util.h"
+#include "queue.h"
 #include <pthread.h>
 
 typedef struct _point POINT;
@@ -14,6 +15,7 @@ POINT *point_create(int id);
 void point_queueLock(POINT *point);
 void point_queueUnlock(POINT *point);
 void point_queue_cond_mutex(POINT *point, pthread_cond_t *cond);
+int point_getNumPassengersInQueue(POINT *point);
 
 //Bus Functions
 boolean point_hasPassangers(POINT *point);
@@ -28,6 +30,9 @@ void point_deque(POINT *point);
 void point_waitForBus(POINT *point, PASSENGER *passenger);
 boolean point_hasSpaceAvaliableInBus(POINT *point);
 boolean point_hasBus(POINT *point);
+
+//Simulation Functions
+QUEUE *point_getQueue(POINT *point);
 
 void point_erase(POINT **point);
 
