@@ -37,7 +37,7 @@ void point_queue_cond_mutex(POINT *point, pthread_cond_t *cond) {
 }
 
 int point_getNumPassengersInQueue(POINT *point) {
-    queue_size(point->queue);
+    return queue_size(point->queue);
 }
 
 //Bus Functions
@@ -55,7 +55,7 @@ void point_disattachBus(POINT *point) {
     pthread_mutex_unlock(&(point->busMutex));
 }
 
-void pont_wakeUpFirst(POINT *point) {
+void point_wakeUpFirst(POINT *point) {
     PASSENGER *passenger = queue_getFist(point->queue);
     passenger_cond_signal(passenger);
 }

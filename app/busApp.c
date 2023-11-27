@@ -43,7 +43,7 @@ void *bus_program(ARGS *args) {
             point_queueLock(currentPoint);
             pthread_mutex_lock(&(bus->passengersMutex));
             while(point_hasPassangers(currentPoint) && bus->numPassengers < bus->maxPassengers) {
-                pont_wakeUpFirst(currentPoint);
+                point_wakeUpFirst(currentPoint);
                 pthread_mutex_unlock(&(bus->passengersMutex));
                 point_queue_cond_mutex(currentPoint, &(bus)->bus_th);      
                 pthread_mutex_lock(&(bus->passengersMutex));

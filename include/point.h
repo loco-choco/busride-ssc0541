@@ -21,7 +21,7 @@ int point_getNumPassengersInQueue(POINT *point);
 boolean point_hasPassangers(POINT *point);
 boolean point_tryAttachBus(POINT *point, BUS *bus);
 void point_disattachBus(POINT *point);
-void pont_wakeUpFirst(POINT *point);
+void point_wakeUpFirst(POINT *point);
 BUS *point_getBus(POINT *point);
 
 //Passenger Functions
