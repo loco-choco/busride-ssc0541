@@ -1,12 +1,20 @@
-UTIL = ./src/util.c ./src/bus.c ./src/passenger.c ./src/passengersList.c ./src/point.c
+UTIL = ./src/util.c ./src/bus.c ./src/passenger.c ./src/point.c ./src/simulation.c ./src/queue.c
 MAIN = ./app/main.c
 BINARY = ./bin/executavel
+TEST = ./app/test.c
+BIN_TEST = ./bin/test 
 
 all:
-	@gcc -Wall -Wno-unused-result -Werror -g $(UTIL) $(MAIN) -o $(BINARY) -lm -lpthread
+	@gcc -Werror -g $(UTIL) $(MAIN) -o $(BINARY) -lm -lpthread
 
 run:
 	@$(BINARY)
+
+test_comp:
+	@gcc -Wall -Wno-unused-result -Werror -g $(UTIL) $(TEST) -o $(BIN_TEST) -lm -lpthread
+
+test_val:
+	@valgrind -s --tool=memcheck --leak-check=full  --track-origins=yes --show-leak-kinds=all --show-reachable=yes $(BIN_TEST)
 
 ex:
 	@./$(BINARY) < in/2.in

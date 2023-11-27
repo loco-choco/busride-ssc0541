@@ -1,18 +1,29 @@
 #ifndef BUS_H
 #define BUS_H
 
-#include "passenger.h"
+#include <pthread.h>
+
+#define NONE -1
 
 typedef struct _bus BUS;
 
+struct _bus {
+    int id;
+
+    int currentPointID;
+    int nextPointID;
+
+    int count;
+    int maxPassengers;
+    int numPassengers;
+    
+    pthread_mutex_t countMutex;
+    pthread_mutex_t passengersMutex;
+    pthread_cond_t passengers_th;
+    pthread_cond_t bus_th;
+};
+
 BUS *bus_create(int id, int passengersMax);
-
-void bus_embark(BUS *bus, PASSENGER *passenger);
-void bus_disembark(BUS *bus, PASSENGER *passenger);
-
-int bus_getID(BUS *bus);
-int bus_getOccupationSpace(BUS *bus);
-int bus_getAvailableSpace(BUS *bus);
 
 void bus_erase(BUS **bus);
 

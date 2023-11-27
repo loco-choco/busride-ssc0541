@@ -1,63 +1,93 @@
 #include "../include/passenger.h"
+#include "../include/util.h"
 #include <stdio.h>
-#include <pthread.h>
+#include <stdlib.h>
 
 struct _passenger {
     int id;
 
-    int sourceID;
-    int currentID;
-    int destinationID;
+    int sourcePointID;
+    int destinationPointID;
+    BUS *bus;
 
     char *timeArrival;
     char *timeBoarding;
     char *timeDisembarkation;
 
+    pthread_cond_t cond_th;
 };
 
-PASSENGER *passenger_create(int id, int sourceID, int destinationID) {
+PASSENGER *passenger_create(int id) {
     PASSENGER *passenger = calloc(1, sizeof(PASSENGER));
     if(passenger != NULL) {
         passenger->id = id;
 
-        passenger->sourceID = sourceID;
-        passenger->currentID = sourceID;
-        passenger->destinationID = destinationID;
+        passenger->bus = NULL;
 
         passenger->timeArrival = NULL;
         passenger->timeBoarding = NULL;
         passenger->timeDisembarkation = NULL;
+
+        pthread_cond_init(&(passenger->cond_th), NULL);
     }
     return passenger;
+}
+
+void passenger_setSoucePointID(PASSENGER *passenger, int id) {
+    passenger->sourcePointID = id;
+}
+
+void passenger_setDestinationPointID(PASSENGER *passenger, int id) {
+    passenger->destinationPointID = id;
+}
+
+void passenger_setBus(PASSENGER *passenger, BUS *bus) {
+    passenger->bus = bus;
 }
 
 int passenger_getID(PASSENGER *passenger) {
     return passenger->id;
 }
 
-int passenger_getSourceID(PASSENGER *passenger) {
-    return passenger->sourceID;
+int passenger_getSourcePointID(PASSENGER *passenger) {
+    return passenger->sourcePointID;
 }
 
-int passenger_getDestinationID(PASSENGER *passenger) {
-    return passenger->destinationID;
+int passenger_getDestinationPointID(PASSENGER *passenger) {
+    return passenger->destinationPointID;
 }
 
-void passenger_setCurrentPointID(PASSENGER *passenger, int currentPointID) {
-    passenger->currentID = currentPointID;
+BUS *passenger_getBus(PASSENGER *passenger) {
+    return passenger->bus;
 }
 
-boolean passenger_isOnPoint(PASSENGER *passenger) {
-    return (passenger->currentID == passenger->destinationID);
+void passenger_setTimeArrival(PASSENGER *passenger, char *timeArrival) {
+    passenger->timeArrival = timeArrival;
+}
+
+void passenger_setTimeBoarding(PASSENGER *passenger, char *timeBoarding) {
+    passenger->timeBoarding = timeBoarding;
+}
+
+void passenger_setTimeDisembarkation(PASSENGER *passenger, char *timeDisembarkation){
+    passenger->timeDisembarkation = timeDisembarkation;
+}
+
+void passenger_cond_wait(PASSENGER *passenger, pthread_mutex_t *mutex) {
+    pthread_cond_wait(&(passenger->cond_th), mutex);
+}
+
+void passenger_cond_signal(PASSENGER *passenger) {
+    pthread_cond_signal(&(passenger->cond_th));
 }
 
 void passenger_saveFile(PASSENGER *passenger) {
 
     char *message = calloc(50, sizeof(char));
-    char *fileName = calloc(30, sizeof(char));
+    char *fileName = calloc(70, sizeof(char));
     
-    sprintf(message, "<%s, %s, %s, %d>", passenger->timeArrival, passenger->timeBoarding, passenger->timeDisembarkation, passenger->destinationID);
-    sprintf(fileName, "passageiro%02d.trace", passenger->id);
+    sprintf(message, "<%s, %s, %s, %d>", passenger->timeArrival, passenger->timeBoarding, passenger->timeDisembarkation, passenger->destinationPointID);
+    sprintf(fileName, "./traceFiles/passageiro%02d.trace", passenger->id);
     
     FILE *file = fopen(fileName, "w\0");
     if(file != NULL) {
@@ -73,7 +103,7 @@ void passenger_saveFile(PASSENGER *passenger) {
     string_delete(&message);
 }
 
-void passenger_delete(PASSENGER **passenger) {
+void passenger_erase(PASSENGER **passenger) {
     if(*passenger != NULL) {
         (*passenger)->id = -1;
 

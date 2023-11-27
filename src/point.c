@@ -1,14 +1,14 @@
-#include "../include/point.h"
-#include "../include/passengersList.h"
+ #include "../include/point.h"
+#include "../include/queue.h"
 #include <stdlib.h>
-#include <pthread.h>
+
 
 struct _point {
-    pthread_mutex_t *busMutex;
+    pthread_mutex_t busMutex;
     BUS *bus;
 
-    pthread_mutex_t *passengersListMutex;
-    PASSENGERSLIST *passengersList;
+    pthread_mutex_t queueMutex;
+    QUEUE *queue;
 };
 
 POINT *point_create(int id) {
@@ -16,58 +16,80 @@ POINT *point_create(int id) {
     if(point != NULL) {
         point->bus = NULL;
 
-        point->busMutex = calloc(1, sizeof(pthread_mutex_t));
-        point->passengersListMutex = calloc(1, sizeof(pthread_mutex_t));
+        pthread_mutex_init(&(point->busMutex), NULL);
+        pthread_mutex_init(&(point->queueMutex), NULL);
 
-        pthread_mutex_init(point->busMutex, NULL);
-        pthread_mutex_init(point->passengersListMutex, NULL);
-
-        point->passengersList = passengersList_create();
+        point->queue = queue_create();
     }
     return point;
 }
 
+//Queue Functions
+void point_queueLock(POINT *point) {
+    pthread_mutex_lock(&(point->queueMutex));
+} 
+
+void point_queueUnlock(POINT *point) {
+    pthread_mutex_unlock(&(point->queueMutex));
+}
+
+void point_queue_cond_mutex(POINT *point, pthread_cond_t *cond) {
+    pthread_cond_wait(cond, &(point->queueMutex));
+}
+
 //Bus Functions
+boolean point_hasPassangers(POINT *point) {
+    return queue_size(point->queue) > 0;
+}
+
 boolean point_tryAttachBus(POINT *point, BUS *bus) {
-    int result = pthread_mutex_trylock(point->busMutex);
+    int result = pthread_mutex_trylock(&(point->busMutex));
+    if(result == 0) point->bus = bus;
     return result == 0;
 }
 void point_disattachBus(POINT *point) {
-    pthread_mutex_unlock(point->busMutex);
+    point->bus = NULL;
+    pthread_mutex_unlock(&(point->busMutex));
+}
+
+void pont_wakeUpFirst(POINT *point) {
+    PASSENGER *passenger = queue_getFist(point->queue);
+    passenger_cond_signal(passenger);
+}
+
+BUS *point_getBus(POINT *point) {
+    return point->bus;
 }
 
 //Passenger Functions
-void point_passengersLock(POINT *point) {
-    pthread_mutex_lock(point->passengersListMutex);
-} //PODE SER SUBSTITUIDA
-
-void point_passengersUnlock(POINT *point) {
-    pthread_mutex_unlock(point->passengersListMutex);
-} //PODE SER SUBSTITUIDA
-
-PASSENGER *point_getFirstPassanger(POINT *point) {
-    return passengersList_head(point->passengersList);
+void point_deque(POINT *point) {
+    queue_deque(point->queue);
 }
 
-void point_removeFirstPassenger(POINT *point) {
-    PASSENGER *passenger = point_getFirstPassanger(point);
-    passengersList_remove(point->passengersList, passenger);
+void point_queue(POINT *point,PASSENGER *passenger) {
+    queue_queue(point->queue, passenger);
 }
 
-void point_pushPassenger(POINT *point, PASSENGER *passenger) {
-    passengersList_push(point->passengersList, passenger);
+void point_waitForBus(POINT *point, PASSENGER *passenger) {
+    passenger_cond_wait(passenger, &(point->queueMutex));
 }
 
-int point_getPassengersWaiting(POINT *point) {
-    return passengersList_getSize(point->passengersList);
+boolean point_hasBus(POINT *point) {
+    return point->bus != NULL;
 }
+
+boolean point_hasSpaceAvaliableInBus(POINT *point) {
+    return (point->bus != NULL && point->bus->numPassengers < point->bus->maxPassengers);
+}
+
+
 
 
 void point_erase(POINT **point) {
     if(*point != NULL) {
-        pthread_mutex_destroy((*point)->busMutex);
-        pthread_mutex_destroy((*point)->passengersListMutex);
-        passengersList_erase(&((*point)->passengersList));
+        pthread_mutex_destroy(&(*point)->busMutex);
+        pthread_mutex_destroy(&(*point)->queueMutex);
+        queue_free((*point)->queue);
         free(*point);
         *point = NULL;
     }

@@ -49,7 +49,6 @@ onibus:
         >> ponto == ALGO:
 
             //Esperar passageiros descerem:
-            onibus seta ponto atual nele;
             contador = qtdPessoasNoOnibus;
             while(contador > 0); 
             **********LIXO: dorme, esperando o ultimo passageiro se decidir;
