@@ -55,7 +55,7 @@ void *onibus(void *p_arg){
     pthread_mutex_unlock(&dados_lock);
     //espera da ida ao prox_ponto
       //esperar_passageiros()
-    usleep(((rand() % 5) / 2 + 1) * 500000);
+    usleep(((rand() % 5) / 2 + 1) * 5000);
   }
   #ifdef DEBUG
   printf("Onibus %d terminando\n", index);

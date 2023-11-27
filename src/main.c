@@ -24,10 +24,10 @@ void desenhar_simulacao_no_terminal(int quant_onibus, int quant_pontos, int quan
 int main(void) {
   printf("Bus Ride!\n");
   srand(time(NULL)); //Seed aleatoria
-  int quant_onibus = 100; 
-  int quant_pontos = 10;
-  int quant_passageiros = 1;
-  int capacidade_onibus = 100;
+  int quant_onibus = 30; 
+  int quant_pontos = 100;
+  int quant_passageiros = 500;
+  int capacidade_onibus = 5;
 
   pthread_t* onibus_handle = calloc(quant_onibus, sizeof(pthread_t));
   pthread_t* pontos_handle = calloc(quant_pontos, sizeof(pthread_t));
@@ -215,10 +215,11 @@ void desenhar_simulacao_no_terminal(int quant_onibus, int quant_pontos, int quan
     }
   }
   free(quant_de_onibus_mostrados_no_ponto);
-  /*
+  
   gotoxy(1,quant_de_indices_para_mostrar * 2 + 3);
   printf("---------- Status da Simulacao ----------\n");
   printf("Quantidade de passageiros restantes: %d\n", num_passageiros_restantes);
+  /*
   printf("Onibus:\n");
   for(i = 0; i < quant_onibus; i++){
     printf("\t[%d] - %d passageiros - ponto %d\n", i, onibus_dados[i].numero_de_passageiros, onibus_dados[i].ponto_atual);
