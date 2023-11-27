@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
     simulation.buses = buses;
     simulation.numPassengers = P;
     simulation.numPassengersRemaining = P;
+    pthread_mutex_init(&(simulation.numPassengersRemaining_lock), NULL);
     simulation.passengers = passengers;
     simulation.running = TRUE;
 
@@ -91,6 +92,7 @@ int main(int argc, char **argv) {
     pthread_join(thread_print, NULL);
 
     printf("Encerrando aplicação...\n");
+    pthread_mutex_destroy(&(simulation.numPassengersRemaining_lock));
     for(int id = 0; id < P; id++) passenger_erase(&passengers[id]);
     for(int id = 0; id < C; id++) bus_erase(&buses[id]);
     for(int id = 0; id < S; id++) point_erase(&points[id]);

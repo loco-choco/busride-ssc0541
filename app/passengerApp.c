@@ -61,6 +61,8 @@ void *passenger_program(ARGS *args) {
     passenger_saveFile(passenger);
 
     args_erase(&args);
+    pthread_mutex_lock(&(simulationData->numPassengersRemaining_lock));
     simulationData->numPassengersRemaining -= 1; 
+    pthread_mutex_unlock(&(simulationData->numPassengersRemaining_lock));
     pthread_exit(0);
 }

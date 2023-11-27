@@ -5,11 +5,13 @@
 #include "point.h"
 #include "passenger.h"
 #include "util.h"
+#include <pthread.h>
 
 typedef struct _simulation {
     boolean running;
     int numPassengers;
     int numPassengersRemaining;
+    pthread_mutex_t numPassengersRemaining_lock;
     PASSENGER **passengers;
     int numPoints;
     POINT **points;
