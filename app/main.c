@@ -11,10 +11,50 @@
 
 void read_args(int *S, int *C, int *P, int *A);
 
-int main(void) {
+int main(int argc, char **argv) {
     
+    if(argc <= 1){
+      printf("No input was provided\n");
+      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
+      return 1;
+    } 
+    else if (argc <= 2){
+      printf("Missing Onibus, Passageiros and Assentos por Onibus\n");
+      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
+      return 1;
+    }
+    else if (argc <= 3){
+      printf("Missing Passageiros and Assentos por Onibus\n");
+      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
+      return 1;
+    }
+    else if (argc <= 4){
+      printf("Missing Assentos por Onibus\n");
+      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
+      return 1;
+    }
     int S, C, P, A;
-    read_args(&S, &C, &P, &A);
+    S = strtol(argv[1], NULL, 10);
+    if(S == 0){
+      printf("%s is an invalid value for Pontos de Onibus (S)\n", argv[1]);
+      return 1;
+    }
+    C = strtol(argv[2], NULL, 10);
+    if(C == 0){
+      printf("%s is an invalid value for Onibus (C)\n", argv[2]);
+      return 1;
+    }
+    P = strtol(argv[3], NULL, 10);
+    if(P == 0){
+      printf("%s is an invalid value for Passageiros (P)\n", argv[3]);
+      return 1;
+    }
+    A = strtol(argv[4], NULL, 10);
+    if(A == 0){
+      printf("%s is an invalid value for Assentos por Onibus (A)\n", argv[4]);
+      return 1;
+    }
+    //read_args(&S, &C, &P, &A);
 
     /*if( P < A || A < C || P < C) {
         printf("Valores invalidos!\n");
