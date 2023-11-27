@@ -66,6 +66,7 @@ void desenhar_status_no_terminal(SIMULATION *simulationData){
 
 void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   int quant_max_de_pontos_para_mostrar = 10;
+  if(quant_max_de_pontos_para_mostrar > simulationData->numPoints) quant_max_de_pontos_para_mostrar = simulationData->numPoints;
   int quant_de_indices_para_mostrar = 5;
   int offset_do_ponto_mostrado = simulationData->numPoints - 1;
   int i;
@@ -73,24 +74,24 @@ void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   for(i = 0; i < quant_de_indices_para_mostrar; i++) printf("\n");
 
   printf("|");
-  for(i = 0; i < quant_max_de_pontos_para_mostrar && i < simulationData->numPoints; i++){
+  for(i = 0; i < quant_max_de_pontos_para_mostrar; i++){
     printf("T==-==-==-==");
   }
   printf("|");
   for(i = 0; i < quant_de_indices_para_mostrar; i++){
     printf("\n|");
-    for(int j = 0; j < quant_max_de_pontos_para_mostrar && j < simulationData->numPoints; j++){
+    for(int j = 0; j < quant_max_de_pontos_para_mostrar; j++){
       printf("            ");
     }
     printf("|");
   }
   printf("\n|");
-  for(i = 0; i < quant_max_de_pontos_para_mostrar && i < simulationData->numPoints; i++){
+  for(i = 0; i < quant_max_de_pontos_para_mostrar; i++){
     printf("-==-==-==-==");
   }
   printf("|");
   //Desenhando passageiros em quais pontos
-  for(i = 0; i < quant_max_de_pontos_para_mostrar && i < simulationData->numPoints; i++){
+  for(i = 0; i < quant_max_de_pontos_para_mostrar; i++){
     int ponto = (i + offset_do_ponto_mostrado) % simulationData->numPoints;
     point_queueLock(simulationData->points[ponto]);
     queue_node *current = point_getQueue(simulationData->points[ponto])->first_node;
