@@ -26,16 +26,16 @@ void *print_program(SIMULATION *simulation) {
 void desenhar_status_no_terminal(SIMULATION *simulalationData){
   int i;
   printf("Quantidade de passageiros restantes: %d\n", simulalationData->numPassengersRemaining);
-  /*printf("Onibus:\n");
+  printf("Onibus:\n");
   for(i = 0; i < simulalationData->numBus; i++){
     BUS *bus = simulalationData->buses[i];
     printf("\t[%d] - %d passageiros - ponto %d\n", i, bus->numPassengers, bus->currentPointID);
-  }*/
-  /*printf("Pontos:\n");
+  }
+  printf("Pontos:\n");
   for(i = 0; i < simulalationData->numPoints; i++){
     POINT *point = simulalationData->points[i];
     printf("\t[%d] - quantidade de passageiros no ponto %d\n", i, point_getNumPassengersInQueue(point));
-  }*/
+  }
   printf("Passageiros:\n");
   for(i = 0; i < simulalationData->numPassengers; i++){
     PASSENGER *passenger = simulalationData->passengers[i];

@@ -12,24 +12,12 @@
 void read_args(int *S, int *C, int *P, int *A);
 
 int main(int argc, char **argv) {
-    
-    if(argc <= 1){
-      printf("No input was provided\n");
-      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
-      return 1;
-    } 
-    else if (argc <= 2){
-      printf("Missing Onibus, Passageiros and Assentos por Onibus\n");
-      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
-      return 1;
-    }
-    else if (argc <= 3){
-      printf("Missing Passageiros and Assentos por Onibus\n");
-      printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
-      return 1;
-    }
-    else if (argc <= 4){
-      printf("Missing Assentos por Onibus\n");
+    int missing_inputs = 0; 
+    if(argc <= 1) printf("No input was provided\n");
+    else if (argc <= 2) printf("Missing Onibus, Passageiros and Assentos por Onibus\n");
+    else if (argc <= 3) printf("Missing Passageiros and Assentos por Onibus\n");
+    else if (argc <= 4) printf("Missing Assentos por Onibus\n");
+    if(argc <= 4){
       printf("Usage: %s <Pontos de Onibus (S)> <Onibus (C)> <Passageiros (P)> <Assentos por Onibus (A)>\n", argv[0]);
       return 1;
     }
@@ -56,10 +44,10 @@ int main(int argc, char **argv) {
     }
     //read_args(&S, &C, &P, &A);
 
-    /*if( P < A || A < C || P < C) {
-        printf("Valores invalidos!\n");
-        return EXIT_FAILURE;
-    }*/
+    if( P < A || A < C || P < C) {
+        printf("The given values must follow the rule:\n\tP > A\n\tA > C\n\tP > C\n");
+        return 1;
+    }
 
     POINT *points[S];
     BUS *buses[C];
