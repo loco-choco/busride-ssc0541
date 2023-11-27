@@ -141,6 +141,12 @@ void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   gotoxy(1, quant_de_indices_para_mostrar * 2 + 3);
   printf("---------- Status da Simulacao ----------\n");
   printf("Quantidade de passageiros restantes: %d\n", simulationData->numPassengersRemaining);
+  
+  printf("---------------- Legenda ----------------\n");
+  printf("\t-> Em "YELLOW("amarelo")" - passageiros esperando no ponto\n");
+  printf("\t-> Em "BLUE("azul")" - indice do ponto\n");
+  printf("\t-> Em "RED("vermelho")" - onibus sem passageiro\n");
+  printf("\t-> Em "GREEN("verde")" - onibus com passageiro\n");
   /*
   printf("Onibus:\n");
   for(i = 0; i < quant_onibus; i++){
