@@ -68,7 +68,7 @@ void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   int quant_max_de_pontos_para_mostrar = 10;
   if(quant_max_de_pontos_para_mostrar > simulationData->numPoints) quant_max_de_pontos_para_mostrar = simulationData->numPoints;
   int quant_de_indices_para_mostrar = 5;
-  int offset_do_ponto_mostrado = simulationData->numPoints - 1;
+  int offset_do_ponto_mostrado = 0;//simulationData->numPoints - 1;
   int i;
   //Preparando o canvas da simulacao
   for(i = 0; i < quant_de_indices_para_mostrar; i++) printf("\n");
