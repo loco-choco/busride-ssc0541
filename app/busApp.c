@@ -17,7 +17,7 @@ void *bus_program(ARGS *args) {
 
         if(bus->currentPointID == NONE) {
             //VIAJANDO
-            usleep(rand() % 2000000);
+            usleep((rand() % 4 + 1)*100000);
 
             //TENTANDO ENTRAR NO PONTO
             POINT *destinationPoint = simulationData->points[bus->nextPointID];
@@ -36,6 +36,7 @@ void *bus_program(ARGS *args) {
             pthread_mutex_lock(&(bus->countMutex));
             while(bus->count > 0) pthread_cond_wait(&(bus->bus_th), &(bus->countMutex));
             pthread_mutex_unlock(&(bus->countMutex));
+	    usleep((rand() % 1 + 1)*50000); //Simular o tempo do onibus esperando as pessoas desembarcar
 
             //EMBARCANDO PESSOAS
             POINT *currentPoint = simulationData->points[bus->currentPointID];
