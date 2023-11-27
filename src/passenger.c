@@ -13,6 +13,7 @@ struct _passenger {
     char *timeArrival;
     char *timeBoarding;
     char *timeDisembarkation;
+    int arrivedAtDestination;
 
     pthread_cond_t cond_th;
 };
@@ -29,6 +30,7 @@ PASSENGER *passenger_create(int id) {
         passenger->timeArrival = NULL;
         passenger->timeBoarding = NULL;
         passenger->timeDisembarkation = NULL;
+	passenger->arrivedAtDestination = 0;
 
         pthread_cond_init(&(passenger->cond_th), NULL);
     }
@@ -62,6 +64,9 @@ int passenger_getDestinationPointID(PASSENGER *passenger) {
 BUS *passenger_getBus(PASSENGER *passenger) {
     return passenger->bus;
 }
+int passenger_getArrivedAtDestination(PASSENGER *passenger) {
+    return passenger->arrivedAtDestination;
+}
 
 void passenger_setTimeArrival(PASSENGER *passenger, char *timeArrival) {
     passenger->timeArrival = timeArrival;
@@ -73,6 +78,10 @@ void passenger_setTimeBoarding(PASSENGER *passenger, char *timeBoarding) {
 
 void passenger_setTimeDisembarkation(PASSENGER *passenger, char *timeDisembarkation){
     passenger->timeDisembarkation = timeDisembarkation;
+}
+
+void passenger_setArrivedAtDestination(PASSENGER *passenger, int arrived){
+    passenger->arrivedAtDestination = arrived;
 }
 
 void passenger_cond_wait(PASSENGER *passenger, pthread_mutex_t *mutex) {

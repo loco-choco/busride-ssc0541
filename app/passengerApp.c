@@ -52,6 +52,7 @@ void *passenger_program(ARGS *args) {
     //sai do onibus;
     pthread_mutex_lock(&(bus->passengersMutex));
     bus->numPassengers -= 1;
+    passenger_setArrivedAtDestination(passenger, 1);
     passenger_setTimeDisembarkation(passenger, string_getCurrentTime());
     pthread_mutex_unlock(&(bus->passengersMutex));
     pthread_mutex_unlock(&(bus->countMutex));

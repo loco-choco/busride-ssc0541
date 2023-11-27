@@ -15,41 +15,43 @@ void desenhar_simulacao_no_terminal(SIMULATION *simulalationData);
 void *print_program(SIMULATION *simulation) {
     while(simulation->running) {
         clear();
-        desenhar_simulacao_no_terminal(simulation);
-        //desenhar_status_no_terminal(simulation);
+        //desenhar_simulacao_no_terminal(simulation);
+        desenhar_status_no_terminal(simulation);
         printf("\n");
         sleep(1);
     }
+    pthread_exit(0);
 }
 
 void desenhar_status_no_terminal(SIMULATION *simulalationData){
   int i;
   printf("Quantidade de passageiros restantes: %d\n", simulalationData->numPassengersRemaining);
-  printf("Onibus:\n");
+  /*printf("Onibus:\n");
   for(i = 0; i < simulalationData->numBus; i++){
     BUS *bus = simulalationData->buses[i];
     printf("\t[%d] - %d passageiros - ponto %d\n", i, bus->numPassengers, bus->currentPointID);
-  }
-  printf("Pontos:\n");
+  }*/
+  /*printf("Pontos:\n");
   for(i = 0; i < simulalationData->numPoints; i++){
     POINT *point = simulalationData->points[i];
     printf("\t[%d] - quantidade de passageiros no ponto %d\n", i, point_getNumPassengersInQueue(point));
-  }
+  }*/
   printf("Passageiros:\n");
   for(i = 0; i < simulalationData->numPassengers; i++){
     PASSENGER *passenger = simulalationData->passengers[i];
     int srcID = passenger_getSourcePointID(passenger);
     int destID = passenger_getDestinationPointID(passenger);
     BUS *bus = passenger_getBus(passenger);
+    int arrived = passenger_getArrivedAtDestination(passenger);
     if(bus == NULL){
-        printf("\t[%d] - (%d -> %d)\n", i,
+        printf("\t[%d] - (%d -> %d) - esperando no ponto\n", i,
                 srcID, destID);
     }
     else {
         printf("\t[%d] - (%d -> %d) - no onibus %d - acabou %d\n", i,
 		    srcID, destID,
 		    bus->id,
-		    -1);
+		    arrived);
     }
   }
   fflush(0);

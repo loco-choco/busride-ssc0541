@@ -16,10 +16,12 @@ int passenger_getID(PASSENGER *passenger);
 int passenger_getSourcePointID(PASSENGER *passenger);
 int passenger_getDestinationPointID(PASSENGER *passenger);
 BUS *passenger_getBus(PASSENGER *passenger);
+int passenger_getArrivedAtDestination(PASSENGER *passenger);
 
 void passenger_setTimeArrival(PASSENGER *passenger, char *timeArrival);
 void passenger_setTimeBoarding(PASSENGER *passenger, char *timeBoarding);
 void passenger_setTimeDisembarkation(PASSENGER *passenger, char *timeDisembarkation);
+void passenger_setArrivedAtDestination(PASSENGER *passenger, int arrived);
 
 void passenger_cond_wait(PASSENGER *passenger, pthread_mutex_t *mutex);
 void passenger_cond_signal(PASSENGER *passenger);
