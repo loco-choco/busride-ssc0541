@@ -8,6 +8,10 @@
 #define enable_cursor() printf("\e[?25h")
 #define disable_cursor() printf("\e[?25l")
 #define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
+#define BLUE(string) "\x1b[34m" string "\x1b[0m"
+#define GREEN(string) "\x1b[32m" string "\x1b[0m"
+#define YELLOW(string) "\x1b[93m" string "\x1b[0m"
+#define RED(string) "\x1b[31m" string "\x1b[0m"
 
 void desenhar_status_no_terminal(SIMULATION *simulationData);
 void desenhar_simulacao_no_terminal(SIMULATION *simulationData);
@@ -63,6 +67,7 @@ void desenhar_status_no_terminal(SIMULATION *simulationData){
 void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   int quant_max_de_pontos_para_mostrar = 10;
   int quant_de_indices_para_mostrar = 5;
+  int offset_do_ponto_mostrado = simulationData->numPoints - 1;
   int i;
   //Preparando o canvas da simulacao
   for(i = 0; i < quant_de_indices_para_mostrar; i++) printf("\n");
@@ -86,14 +91,15 @@ void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   printf("|");
   //Desenhando passageiros em quais pontos
   for(i = 0; i < quant_max_de_pontos_para_mostrar && i < simulationData->numPoints; i++){
-    point_queueLock(simulationData->points[i]);
-    queue_node *current = point_getQueue(simulationData->points[i])->first_node;
-    for(int j = 0; j < quant_de_indices_para_mostrar && j < point_getNumPassengersInQueue(simulationData->points[i]); j++){
+    int ponto = (i + offset_do_ponto_mostrado) % simulationData->numPoints;
+    point_queueLock(simulationData->points[ponto]);
+    queue_node *current = point_getQueue(simulationData->points[ponto])->first_node;
+    for(int j = 0; j < quant_de_indices_para_mostrar && j < point_getNumPassengersInQueue(simulationData->points[ponto]); j++){
       gotoxy(2 + i * 12, quant_de_indices_para_mostrar - j);
-      printf("%d", passenger_getID(current->passenger));
+      printf(YELLOW("%d"), passenger_getID(current->passenger));
       current = current->prev_node;
     }
-    point_queueUnlock(simulationData->points[i]);
+    point_queueUnlock(simulationData->points[ponto]);
   }
   //Desenhando onibus em quais pontos
   int* quant_de_onibus_mostrados_no_ponto = calloc(quant_max_de_pontos_para_mostrar, sizeof(int));
@@ -101,27 +107,38 @@ void desenhar_simulacao_no_terminal(SIMULATION *simulationData){
   for(int j = 0; j < simulationData->numBus; j++){
     BUS *bus = simulationData->buses[j];
     int currentPointID = bus->currentPointID;
+    int currentPointID_view_pos = (currentPointID + offset_do_ponto_mostrado) % simulationData->numPoints; //Para visualizacao
     int nextPointID = bus->nextPointID - 1;
     if(nextPointID < 0) nextPointID = simulationData->numPoints - 1;
-    if(currentPointID >= 0 && currentPointID < quant_max_de_pontos_para_mostrar 
-		    && quant_de_onibus_mostrados_no_ponto[currentPointID] < quant_de_indices_para_mostrar){
-      gotoxy(2 + currentPointID * 12, quant_de_indices_para_mostrar + quant_de_onibus_mostrados_no_ponto[currentPointID] + 2);
-      printf("%d", j); //j eh o index do onibus
+    int nextPointID_view_pos = (nextPointID + offset_do_ponto_mostrado) % simulationData->numPoints; //Para visualizacao
 
-      quant_de_onibus_mostrados_no_ponto[currentPointID]++;
+    if(currentPointID >= 0 && currentPointID_view_pos < quant_max_de_pontos_para_mostrar 
+		    && quant_de_onibus_mostrados_no_ponto[currentPointID_view_pos] < quant_de_indices_para_mostrar){
+      gotoxy(2 + currentPointID_view_pos * 12, quant_de_indices_para_mostrar + quant_de_onibus_mostrados_no_ponto[currentPointID_view_pos] + 2);
+      if(bus->numPassengers > 0) printf(GREEN("%d"), j); //j eh o index do onibus
+      else printf(RED("%d"), j); //j eh o index do onibus
+
+      quant_de_onibus_mostrados_no_ponto[currentPointID_view_pos]++;
     }
-    else if(nextPointID >= 0 && nextPointID < quant_max_de_pontos_para_mostrar 
-		    && quant_de_onibus_mostrados_no_entre_pontos[nextPointID] < quant_de_indices_para_mostrar){
-      gotoxy(2 + 6 + nextPointID * 12, quant_de_indices_para_mostrar + quant_de_onibus_mostrados_no_entre_pontos[nextPointID] + 2);
-      printf("%d", j); //j eh o index do onibus
+    else if(nextPointID >= 0 && nextPointID_view_pos < quant_max_de_pontos_para_mostrar 
+		    && quant_de_onibus_mostrados_no_entre_pontos[nextPointID_view_pos] < quant_de_indices_para_mostrar){
+      gotoxy(2 + 6 + nextPointID_view_pos * 12, quant_de_indices_para_mostrar + quant_de_onibus_mostrados_no_entre_pontos[nextPointID_view_pos] + 2);
+      if(bus->numPassengers > 0) printf(GREEN("%d"), j); //j eh o index do onibus
+      else printf(RED("%d"), j); //j eh o index do onibus
 
-      quant_de_onibus_mostrados_no_entre_pontos[nextPointID]++;
+      quant_de_onibus_mostrados_no_entre_pontos[nextPointID_view_pos]++;
     }
   }
   free(quant_de_onibus_mostrados_no_ponto);
   free(quant_de_onibus_mostrados_no_entre_pontos);
+  //Desenhando o ID de cada ponto
+  for(i = 0; i < quant_max_de_pontos_para_mostrar; i++){
+    gotoxy(2 + i * 12, quant_de_indices_para_mostrar + 1);
+    printf(BLUE("%d"), (i + offset_do_ponto_mostrado)%simulationData->numPoints);
+  }
+
   
-  gotoxy(1,quant_de_indices_para_mostrar * 2 + 3);
+  gotoxy(1, quant_de_indices_para_mostrar * 2 + 3);
   printf("---------- Status da Simulacao ----------\n");
   printf("Quantidade de passageiros restantes: %d\n", simulationData->numPassengersRemaining);
   /*
