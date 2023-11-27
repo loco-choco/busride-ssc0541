@@ -19,12 +19,6 @@ all:
 run:
 	@$(BINARY) $(RUN_ARGS)
 
-test_comp:
-	@gcc -Wall -Wno-unused-result -Werror -g $(UTIL) $(TEST) -o $(BIN_TEST) -lm -lpthread
-
-test_val:
-	@valgrind -s --tool=memcheck --leak-check=full  --track-origins=yes --show-leak-kinds=all --show-reachable=yes $(BIN_TEST)
-
 ex:
 	@./$(BINARY) < in/2.in
 
