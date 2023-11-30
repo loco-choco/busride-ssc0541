@@ -56,15 +56,16 @@ void onibus(){
       ponto = NENHUM;
     }
   }
+  encerra();
 }
 ```
 
 - Passageiro:
 ```C
 //passageiro:
-id ponto_inicial
-id ponto_final
-bus *onibus
+id ponto_inicial;
+id ponto_final;
+bus *onibus;
 
 void passageiro(){
   //Vai pro ponto inicial
