@@ -93,3 +93,9 @@ void passageiro(){
   encerra();
 }
 ```
+
+## Algoritimo de Desembarque
+
+O algoritimo de desembarque pode parecer um pouco confuso, entao segue o seguinte esquema para tentar esclarece-lo.
+
+![Algoritimo de Desembarque](algo-desembarque.png)
